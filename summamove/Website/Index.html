@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Layout</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: grid;
+    }
+
+    .grid {
+      min-height: 100vh;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr 1fr auto;
+      gap: 40px 40px;
+      padding: 40px 80px;
+      background-color: #fff;
+    }
+
+    .Header {
+      grid-column: 1 / 3;
+      background-color: #ddd;
+      border-radius: 16px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+
+    .Header img {
+      border-radius: 50%;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-link {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      transform: scale(1.1);
+      background-color: #ccc;
+    }
+
+    .nav-link.active {
+      background: #bbb;
+    }
+
+    .card {
+      background-color: #ddd;
+      border-radius: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      height: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-content {
+      flex-grow: 1;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .card-bottom-line {
+      width: 90%;
+      height: 1px;
+      background-color: #999;
+      margin: 16px 0 8px;
+    }
+
+    .card-label {
+      color: #777;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .bottom-space {
+      grid-column: 1 / 3;
+      height: 60px;
+    }
+
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      font-family: Arial, sans-serif;
+    }
+
+    .styled-table thead tr {
+      background-color: #bbb;
+      color: #000;
+    }
+
+    .styled-table th,
+    .styled-table td {
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {
+      background-color: #eee;
+    }
+
+    .styled-table tbody tr:hover {
+      background-color: #ddd;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .card {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="Header">
+    <img src="logo-1861420_1280-removebg-preview.png" alt="Logo" height="90">
+    <div class="nav-links">
+      <div class="nav-link active" onclick="showPage('dashboard')">SUMMAMOVE</div>
+      <div class="nav-link" onclick="showPage('gebruikers')">GEBRUIKERS</div>
+      <div class="nav-link" onclick="showPage('oefeningen')">OEFENINGEN</div>
+      <div class="nav-link" onclick="showPage('prestaties')">PRESTATIES</div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <section class="grid page active" id="dashboard">
+    <div class="card">
+      <div class="card-content">
+        <table class="styled-table">
+          <thead><tr><th>Naam</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Jan Jansen</td><td>Actief</td></tr>
+            <tr><td>Piet Pietersen</td><td>Inactief</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-bottom-line"></div>
+      <div class="card-label">SUMMAMOVE</div>
+    </div>
+
+    <div class="card">
+      <div class="card-content">
+        <table class="styled-table">
+          <thead><tr><th>Oefening</th><th>Duur</th></tr></thead>
+          <tbody>
+            <tr><td>Squats</td><td>15 min</td></tr>
+            <tr><td>Push-ups</td><td>10 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-bottom-line"></div>
+      <div class="card-label">OEFENINGEN</div>
+    </div>
+
+    <div class="card">
+      <div class="card-content">
+        <table class="styled-table">
+          <thead><tr><th>Persoon</th><th>Score</th></tr></thead>
+          <tbody>
+            <tr><td>Lisa</td><td>95</td></tr>
+            <tr><td>Tom</td><td>88</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-bottom-line"></div>
+      <div class="card-label">PRESTATIES</div>
+    </div>
+
+    <div class="card">
+      <div class="card-content">
+        <table class="styled-table">
+          <thead><tr><th>Gebruiker</th><th>Email</th></tr></thead>
+          <tbody>
+            <tr><td>Anna</td><td>anna@mail.com</td></tr>
+            <tr><td>Koen</td><td>koen@mail.com</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-bottom-line"></div>
+      <div class="card-label">GEBRUIKERS</div>
+    </div>
+
+    <div class="bottom-space"></div>
+  </section>
+
+  <!-- Gebruikers -->
+  <section class="grid page" id="gebruikers" style="grid-template-columns: 1fr;">
+    <div class="card" style="width: 100%;">
+      <div style="width: 100%; overflow-x: auto;">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Naam</th>
+              <th>Email</th>
+              <th>Leeftijd</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Jan Jansen</td><td>jan@example.com</td><td>23</td><td>Actief</td></tr>
+            <tr><td>2</td><td>Piet Pietersen</td><td>piet@example.com</td><td>30</td><td>Inactief</td></tr>
+            <tr><td>3</td><td>Lisa van Dijk</td><td>lisa@example.com</td><td>27</td><td>Actief</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-bottom-line"></div>
+      <div class="card-label">GEBRUIKERS</div>
+    </div>
+    <div class="bottom-space"></div>
+  </section>
+
+  <!-- Andere lege secties -->
+  <section class="grid page" id="oefeningen">
+    <div class="card"><div class="card-top"></div><div class="card-bottom-line"></div><div class="card-label">OEFENINGEN</div></div>
+  </section>
+
+  <section class="grid page" id="prestaties">
+    <div class="card"><div class="card-top"></div><div class="card-bottom-line"></div><div class="card-label">PRESTATIES</div></div>
+  </section>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.innerText.toLowerCase() === pageId);
+      });
+    }
+  </script>
+</body>
+</html>
