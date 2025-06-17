@@ -1,112 +1,57 @@
 import 'package:flutter/material.dart';
-import 'about_screen.dart';
-import 'login_screen.dart';
-import 'performance_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
+class HomeScreen extends StatelessWidget {
+  final bool isLoggedIn = false;
 
-class _HomeScreenState extends State<HomeScreen> {
-  final List<String> exercises = [
-    'Oefening 1',
-    'Oefening 2',
-    'Oefening 3',
+  final List<Map<String, String>> exercises = [
+    {'name': 'Traplopen', 'description': 'Loop de trap op en neer 5 keer.'},
+    {'name': 'Push-ups', 'description': 'Doe 10 push-ups.'},
   ];
-
-  String selectedLanguage = 'Nederlands';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('SummaMove Oefeningen'),
+      appBar: AppBar(title: Text('Oefeningen')),
+      body: ListView.builder(
+        itemCount: exercises.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(exercises[index]['name']!),
+            subtitle: Text(exercises[index]['description']!),
+            onTap: () => Navigator.pushNamed(context, '/exercise_detail'),
+          );
+        },
       ),
       drawer: Drawer(
         child: ListView(
           children: [
-            DrawerHeader(
-              child: Text('SummaMove Menu', style: TextStyle(fontSize: 24)),
-              decoration: BoxDecoration(color: Colors.blue),
-            ),
-            ListTile(
-              title: Text('Taal: $selectedLanguage'),
-              onTap: () {
-                _showLanguageDialog();
-              },
-            ),
-            ListTile(
-              title: Text('Oefeningen'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Prestaties'),
-              onTap: () {
-                Navigator.pushNamed(context, PerformanceScreen.routeName);
-              },
-            ),
-            ListTile(
-              title: Text('Inloggen'),
-              onTap: () {
-                Navigator.pushNamed(context, LoginScreen.routeName);
-              },
-            ),
-            ListTile(
-              title: Text('About'),
-              onTap: () {
-                Navigator.pushNamed(context, AboutScreen.routeName);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: exercises.length,
-        itemBuilder: (ctx, i) {
-          return ListTile(
-            title: Text(exercises[i]),
-            onTap: () {
-              // TODO: oefening detail scherm
-            },
-          );
-        },
-      ),
-    );
-  }
+            DrawerHeader(child: Text('Menu')),
 
-  void _showLanguageDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Selecteer taal'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: Text('Nederlands'),
-              value: 'Nederlands',
-              groupValue: selectedLanguage,
-              onChanged: (val) {
-                setState(() {
-                  selectedLanguage = val!;
-                });
-                Navigator.of(ctx).pop();
-              },
-            ),
-            RadioListTile<String>(
-              title: Text('Engels'),
-              value: 'Engels',
-              groupValue: selectedLanguage,
-              onChanged: (val) {
-                setState(() {
-                  selectedLanguage = val!;
-                });
-                Navigator.of(ctx).pop();
-              },
-            ),
+            if (!isLoggedIn) ...[
+              ListTile(
+                title: Text('Login'),
+                onTap: () => Navigator.pushNamed(context, '/login'),
+              ),
+              ListTile(
+                title: Text('Register'),
+                onTap: () => Navigator.pushNamed(context, '/register'),
+              ),
+            ],
+
+            if (isLoggedIn) ...[
+              ListTile(
+                title: Text('Prestaties'),
+                onTap: () => Navigator.pushNamed(context, '/performance'),
+              ),
+              ListTile(
+                title: Text('Over'),
+                onTap: () => Navigator.pushNamed(context, '/about'),
+              ),
+              ListTile(
+                title: Text('QR Scanner'),
+                onTap: () => Navigator.pushNamed(context, '/qr_scanner'),
+              ),
+            ],
           ],
         ),
       ),

@@ -1,101 +1,23 @@
 import 'package:flutter/material.dart';
 
 class PerformanceScreen extends StatefulWidget {
-  static const routeName = '/performance';
-
   @override
   _PerformanceScreenState createState() => _PerformanceScreenState();
 }
 
 class _PerformanceScreenState extends State<PerformanceScreen> {
-  List<String> performances = [];
+  List<Map<String, dynamic>> performances = [
+    {'date': '2025-06-10', 'exercise': 'Traplopen', 'count': 5, 'user': 'Jan'},
+    {'date': '2025-06-11', 'exercise': 'Push-ups', 'count': 10, 'user': 'Eva'},
+  ];
 
-  final TextEditingController _controller = TextEditingController();
+  // Voor oefeningnamen gebruiken we een vaste lijst, dit kan je dynamisch maken.
+  final List<String> exercises = ['Traplopen', 'Push-ups'];
 
-  void _addPerformance() {
-    _controller.clear();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Nieuwe prestatie toevoegen'),
-        content: TextField(
-          controller: _controller,
-          decoration: InputDecoration(hintText: 'Beschrijving'),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Annuleren')),
-          TextButton(
-              onPressed: () {
-                if (_controller.text.trim().isNotEmpty) {
-                  setState(() {
-                    performances.add(_controller.text.trim());
-                  });
-                }
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Toevoegen')),
-        ],
-      ),
-    );
-  }
-
-  void _editPerformance(int index) {
-    _controller.text = performances[index];
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Prestatie wijzigen'),
-        content: TextField(
-          controller: _controller,
-          decoration: InputDecoration(hintText: 'Beschrijving'),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Annuleren')),
-          TextButton(
-              onPressed: () {
-                if (_controller.text.trim().isNotEmpty) {
-                  setState(() {
-                    performances[index] = _controller.text.trim();
-                  });
-                }
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Opslaan')),
-        ],
-      ),
-    );
-  }
-
-  void _deletePerformance(int index) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Prestatie verwijderen?'),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Nee')),
-          TextButton(
-              onPressed: () {
-                setState(() {
-                  performances.removeAt(index);
-                });
-                Navigator.of(ctx).pop();
-              },
-              child: Text('Ja')),
-        ],
-      ),
-    );
+  void _addPerformance(Map<String, dynamic> newPerformance) {
+    setState(() {
+      performances.add(newPerformance);
+    });
   }
 
   @override
@@ -106,44 +28,155 @@ class _PerformanceScreenState extends State<PerformanceScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: _addPerformance,
-            tooltip: 'Nieuwe prestatie toevoegen',
+            onPressed: () async {
+              final result = await Navigator.push<Map<String, dynamic>>(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AddPerformanceScreen(
+                    exercises: exercises,
+                  ),
+                ),
+              );
+              if (result != null) {
+                _addPerformance(result);
+              }
+            },
           )
         ],
       ),
-      body: performances.isEmpty
-          ? Center(
-        child: Text(
-          'Geen prestaties beschikbaar.\nDruk op + om een prestatie toe te voegen.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16),
-        ),
-      )
-          : ListView.builder(
+      body: ListView.builder(
         itemCount: performances.length,
-        itemBuilder: (ctx, index) {
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            child: ListTile(
-              title: Text(performances[index]),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
+        itemBuilder: (context, index) {
+          final p = performances[index];
+          return ListTile(
+            title: Text('${p['user']} - ${p['exercise']}'),
+            subtitle: Text('Datum: ${p['date']} - Aantal: ${p['count']}'),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AddPerformanceScreen extends StatefulWidget {
+  final List<String> exercises;
+
+  AddPerformanceScreen({required this.exercises});
+
+  @override
+  _AddPerformanceScreenState createState() => _AddPerformanceScreenState();
+}
+
+class _AddPerformanceScreenState extends State<AddPerformanceScreen> {
+  final _formKey = GlobalKey<FormState>();
+  String _user = '';
+  String? _selectedExercise;
+  int? _count;
+  DateTime? _selectedDate;
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? now,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(now.year + 5),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nieuwe Prestatie toevoegen'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Naam van gebruiker'),
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Vul een naam in' : null,
+                onSaved: (value) => _user = value!,
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Naam van oefening'),
+                items: widget.exercises
+                    .map((e) => DropdownMenuItem(
+                  child: Text(e),
+                  value: e,
+                ))
+                    .toList(),
+                validator: (value) =>
+                value == null ? 'Selecteer een oefening' : null,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedExercise = value;
+                  });
+                },
+                value: _selectedExercise,
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Aantal keer'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Vul een aantal in';
+                  final n = int.tryParse(value);
+                  if (n == null || n <= 0) return 'Vul een geldig getal in';
+                  return null;
+                },
+                onSaved: (value) => _count = int.parse(value!),
+              ),
+              SizedBox(height: 16),
+              Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _editPerformance(index),
-                    tooltip: 'Bewerken',
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'Geen datum geselecteerd'
+                          : 'Geselecteerde datum: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deletePerformance(index),
-                    tooltip: 'Verwijderen',
+                  TextButton(
+                    onPressed: _pickDate,
+                    child: Text('Datum kiezen'),
                   ),
                 ],
               ),
-            ),
-          );
-        },
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    if (_selectedDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Selecteer een datum')),
+                      );
+                      return;
+                    }
+                    _formKey.currentState!.save();
+                    Navigator.pop(context, {
+                      'user': _user,
+                      'exercise': _selectedExercise,
+                      'count': _count,
+                      'date': _selectedDate!.toIso8601String().split('T')[0],
+                    });
+                  }
+                },
+                child: Text('Toevoegen'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

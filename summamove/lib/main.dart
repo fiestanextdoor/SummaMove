@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'screens/about_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/performance_screen.dart';
+import 'screens/register_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/performance_screen.dart';
+import 'screens/about_screen.dart';
+import 'screens/excercise_detail.dart';
+import 'screens/qr_scanner_screen.dart';
 
 void main() {
   runApp(SummaMoveApp());
@@ -13,12 +16,19 @@ class SummaMoveApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SummaMove',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
       routes: {
-        AboutScreen.routeName: (_) => AboutScreen(),
-        LoginScreen.routeName: (_) => LoginScreen(),
-        PerformanceScreen.routeName: (_) => PerformanceScreen(),
+        '/': (context) => HomeScreen(),
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/home': (context) => HomeScreen(),
+        '/performance': (context) => PerformanceScreen(),
+        '/about': (context) => AboutScreen(),
+        '/exercise_detail': (context) => ExerciseDetailScreen(),
+        '/qr_scanner': (context) => QRScannerScreen(),
       },
     );
   }
