@@ -1,32 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class HomeScreen extends StatelessWidget {
-  final bool isLoggedIn = false;
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-  final List<Map<String, String>> exercises = [
-    {'name': 'Traplopen', 'description': 'Loop de trap op en neer 5 keer.'},
-    {'name': 'Push-ups', 'description': 'Doe 10 push-ups.'},
-  ];
+class _HomeScreenState extends State<HomeScreen> {
+  List<dynamic> exercises = [];
+  bool isLoading = true;
+  bool isLoggedIn = false;
+
+  Future<void> fetchExercises() async {
+    final response = await http.get(Uri.parse('http://jouwdomein.nl/get_exercises.php'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        exercises = json.decode(response.body);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        exercises = [];
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fout bij het laden van oefeningen')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchExercises();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Oefeningen')),
-      body: ListView.builder(
-        itemCount: exercises.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(exercises[index]['name']!),
-            subtitle: Text(exercises[index]['description']!),
-            onTap: () => Navigator.pushNamed(context, '/exercise_detail'),
-          );
-        },
+      appBar: AppBar(
+        title: Text('Oefeningen'),
       ),
       drawer: Drawer(
         child: ListView(
           children: [
-            DrawerHeader(child: Text('Menu')),
-
+            DrawerHeader(child: Text('Menu', style: TextStyle(fontSize: 24))),
             if (!isLoggedIn) ...[
               ListTile(
                 title: Text('Login'),
@@ -37,7 +57,6 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, '/register'),
               ),
             ],
-
             if (isLoggedIn) ...[
               ListTile(
                 title: Text('Prestaties'),
@@ -54,6 +73,25 @@ class HomeScreen extends StatelessWidget {
             ],
           ],
         ),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : exercises.isEmpty
+          ? Center(child: Text('Geen oefeningen gevonden.'))
+          : ListView.builder(
+        itemCount: exercises.length,
+        itemBuilder: (context, index) {
+          final exercise = exercises[index];
+          return ListTile(
+            title: Text(exercise['name'] ?? 'Geen naam'),
+            subtitle: Text(exercise['description'] ?? 'Geen beschrijving'),
+            onTap: () => Navigator.pushNamed(
+              context,
+              '/exercise_detail',
+              arguments: exercise,
+            ),
+          );
+        },
       ),
     );
   }
