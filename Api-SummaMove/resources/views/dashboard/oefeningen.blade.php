@@ -1,19 +1,12 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
+
+@section('title', 'Oefeningen')
 
 @section('content')
     <h2>Oefeningen</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Naam</th>
-            <th>Beschrijving</th>
-        </tr>
-        @foreach ($oefeningen as $oefening)
-        <tr>
-            <td>{{ $oefening->id }}</td>
-            <td>{{ $oefening->naam }}</td>
-            <td>{{ $oefening->beschrijving }}</td>
-        </tr>
+    <ul>
+        @foreach($oefeningen as $oefening)
+            <li>{{ $oefeningen->naam }} - {{ $oefeningen->beschrijving }}</li>
         @endforeach
-    </table>
+    </ul>
 @endsection

@@ -1,17 +1,12 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
+
+@section('title', 'Gebruikers')
 
 @section('content')
     <h2>Gebruikers</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Naam</th>
-        </tr>
-        @foreach ($gebruikers as $gebruiker)
-        <tr>
-            <td>{{ $gebruiker->id }}</td>
-            <td>{{ $gebruiker->name }}</td>
-        </tr>
+    <ul>
+        @foreach($gebruikers as $gebruiker)
+            <li>{{ $gebruiker->name }} ({{ $gebruiker->email }})</li>
         @endforeach
-    </table>
+    </ul>
 @endsection

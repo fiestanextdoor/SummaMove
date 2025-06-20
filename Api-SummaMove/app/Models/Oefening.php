@@ -9,6 +9,8 @@ class Oefening extends Model
 {
     use HasFactory;
 
+    protected $table = 'oefeningen'; // Voeg dit toe
+
     protected $fillable = [
         'naam',
         'beschrijving',

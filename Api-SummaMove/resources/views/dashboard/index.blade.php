@@ -1,6 +1,5 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('content')
-    <h1>Welkom op het Dashboard</h1>
-    <p>Kies een onderdeel via de navigatie bovenaan.</p>
+    <h1>Welkom op het dashboard!</h1>
 @endsection

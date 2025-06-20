@@ -28,7 +28,8 @@ class DashboardController extends Controller
 
     public function prestaties()
     {
-        $prestaties = Prestatie::with('user', 'oefening')->get();
+        $prestaties = Prestatie::with(['gebruiker', 'oefening'])->get();
         return view('dashboard.prestaties', compact('prestaties'));
     }
 }
+
