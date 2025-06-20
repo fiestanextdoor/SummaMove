@@ -23,13 +23,13 @@ class Prestatie extends Model
         return $this->belongsTo(Gebruiker::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function oefening()
     {
         return $this->belongsTo(Oefening::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 }
