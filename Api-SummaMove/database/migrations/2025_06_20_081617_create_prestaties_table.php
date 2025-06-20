@@ -9,10 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('prestaties', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('gebruiker_id')->constrained('gebruikers')->onDelete('cascade');
+            $table->foreignId('oefening_id')->constrained('oefeningen')->onDelete('cascade');
+            $table->date('datum');
+            $table->time('starttijd');
+            $table->time('eindtijd');
+            $table->integer('aantal');
             $table->timestamps();
         });
     }
