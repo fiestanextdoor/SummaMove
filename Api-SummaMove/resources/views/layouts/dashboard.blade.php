@@ -22,14 +22,33 @@
             padding: 8px;
             text-align: left;
         }
+        form.logout-form {
+            display: inline;
+        }
+        form.logout-form button {
+            background: none;
+            border: none;
+            color: #1f2937;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 0;
+        }
+        form.logout-form button:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <nav>
-        <a href="{{ route('dashboard') }}">Dashboard</a>
+        <a href="{{ route('dashboard.index') }}">Dashboard</a>
         <a href="{{ route('dashboard.gebruikers') }}">Gebruikers</a>
-        <a href="{{ route('dashboard.oefeningen') }}">Oefeningen</a>
+        <a href="{{ route('dashboard.oefeningen.index') }}">Oefeningen</a>
         <a href="{{ route('dashboard.prestaties') }}">Prestaties</a>
+        <form method="POST" action="{{ route('logout') }}" class="logout-form">
+            @csrf
+            <button type="submit">Uitloggen</button>
+        </form>
     </nav>
 
     <main>

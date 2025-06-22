@@ -32,4 +32,3 @@ class DashboardController extends Controller
         return view('dashboard.prestaties', compact('prestaties'));
     }
 }
-

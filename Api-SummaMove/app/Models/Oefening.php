@@ -9,12 +9,12 @@ class Oefening extends Model
 {
     use HasFactory;
 
-    protected $table = 'oefeningen'; // Voeg dit toe
+    protected $table = 'oefeningen';
 
     protected $fillable = [
         'naam',
         'beschrijving',
-        'foto',
+        'foto', 
     ];
 
     public function prestaties()

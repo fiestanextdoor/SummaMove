@@ -4,7 +4,7 @@
 
 @section('content')
     <h2>Prestaties</h2>
-    <table class="table table-bordered">
+    <table>
         <thead>
             <tr>
                 <th>Gebruiker</th>

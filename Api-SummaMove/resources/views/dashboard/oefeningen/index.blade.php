@@ -9,7 +9,7 @@
         <div class="alert-success">{{ session('success') }}</div>
     @endif
 
-    <a href="{{ route('oefeningen.create') }}" class="btn">Nieuwe Oefening</a>
+    <a href="{{ route('dashboard.oefeningen.create') }}" class="btn">Nieuwe Oefening</a>
 
     @if($oefeningen->isEmpty())
         <p>Geen oefeningen gevonden.</p>
@@ -30,9 +30,9 @@
                         <td>{{ $oefening->naam }}</td>
                         <td>{{ $oefening->beschrijving ?? 'Geen beschrijving beschikbaar' }}</td>
                         <td>
-                            <a href="{{ route('oefeningen.edit', $oefening) }}" class="btn btn-warning">Bewerken</a>
+                            <a href="{{ route('dashboard.oefeningen.edit', $oefening) }}" class="btn">Bewerken</a>
 
-                            <form action="{{ route('oefeningen.destroy', $oefening) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Weet je zeker dat je deze oefening wilt verwijderen?');">
+                            <form action="{{ route('dashboard.oefeningen.destroy', $oefening) }}" method="POST" onsubmit="return confirm('Weet je zeker dat je deze oefening wilt verwijderen?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Verwijderen</button>
