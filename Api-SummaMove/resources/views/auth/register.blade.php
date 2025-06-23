@@ -1,11 +1,13 @@
-@extends('layouts.app')
-
-@section('title', 'Registreren')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Registreren</title>
+</head>
+<body>
     <h1>Registreren</h1>
 
-    @if($errors->any())
+    @if ($errors->any())
         <div style="color:red;">
             <ul>
                 @foreach ($errors->all() as $error)
@@ -15,20 +17,30 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('register.submit') }}">
+    <form method="POST" action="{{ route('register') }}">
         @csrf
-        <label>Naam:</label><br />
-        <input type="text" name="name" required value="{{ old('name') }}" /><br /><br />
 
-        <label>Email:</label><br />
-        <input type="email" name="email" required value="{{ old('email') }}" /><br /><br />
+        <div>
+            <label>Naam</label>
+            <input type="text" name="name" value="{{ old('name') }}" required autofocus>
+        </div>
 
-        <label>Wachtwoord:</label><br />
-        <input type="password" name="password" required /><br /><br />
+        <div>
+            <label>Email</label>
+            <input type="email" name="email" value="{{ old('email') }}" required>
+        </div>
 
-        <label>Bevestig wachtwoord:</label><br />
-        <input type="password" name="password_confirmation" required /><br /><br />
+        <div>
+            <label>Wachtwoord</label>
+            <input type="password" name="password" required>
+        </div>
 
-        <button type="submit" class="btn">Registreren</button>
+        <div>
+            <label>Bevestig wachtwoord</label>
+            <input type="password" name="password_confirmation" required>
+        </div>
+
+        <button type="submit">Registreren</button>
     </form>
-@endsection
+</body>
+</html>

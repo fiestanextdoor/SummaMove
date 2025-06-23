@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OefeningController;
 use App\Http\Controllers\PrestatieController;
-use App\Http\Controllers\GebruikersController; // Aangepast naar GebruikersController
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Auth;
 
 // Root redirect naar dashboard
@@ -11,12 +12,12 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-// Dashboard
+// Dashboard route, alleen toegankelijk als ingelogd
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
-// Oefeningen routes (met naam prefix 'oefeningen.')
+// Oefeningen routes (auth verplicht)
 Route::middleware('auth')->prefix('oefeningen')->name('oefeningen.')->group(function () {
     Route::get('/', [OefeningController::class, 'index'])->name('index');
     Route::get('/create', [OefeningController::class, 'create'])->name('create');
@@ -26,7 +27,7 @@ Route::middleware('auth')->prefix('oefeningen')->name('oefeningen.')->group(func
     Route::delete('/{oefening}', [OefeningController::class, 'destroy'])->name('destroy');
 });
 
-// Prestaties routes (naam prefix 'prestaties.')
+// Prestaties routes (auth verplicht)
 Route::middleware('auth')->prefix('prestaties')->name('prestaties.')->group(function () {
     Route::get('/', [PrestatieController::class, 'index'])->name('index');
     Route::get('/create', [PrestatieController::class, 'create'])->name('create');
@@ -36,12 +37,16 @@ Route::middleware('auth')->prefix('prestaties')->name('prestaties.')->group(func
     Route::delete('/{prestatie}', [PrestatieController::class, 'destroy'])->name('destroy');
 });
 
-// Gebruikerslijst via GebruikersController
+// Gebruikerslijst routes (auth verplicht)
 Route::middleware('auth')->prefix('gebruikers')->name('gebruikers.')->group(function () {
-    Route::get('/', [GebruikersController::class, 'index'])->name('index');
-    // Indien nodig kun je hier andere gebruikers routes toevoegen
-    // bv. create, store, edit, update, destroy
+    Route::get('/', [UserController::class, 'index'])->name('index');
 });
 
-// Auth routes
+// Registratie routes (alleen voor gasten)
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
+});
+
+// Auth routes (login, logout, wachtwoord reset, etc.)
 Auth::routes();

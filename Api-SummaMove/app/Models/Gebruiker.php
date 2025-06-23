@@ -3,26 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Gebruiker extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    protected $table = 'gebruikers';  // jouw custom tabel
 
-    protected $table = 'gebruikers';
+    protected $fillable = ['naam', 'email', 'wachtwoord']; // pas aan naar jouw kolommen
 
-    protected $fillable = [
-        'username',
-        'password',
-    ];
+    protected $hidden = ['wachtwoord', 'remember_token'];
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $primaryKey = 'id';  // meestal id, pas aan indien anders
 
-    public function prestaties()
+    // Pas wachtwoord kolomnaam aan, als het niet 'password' is
+    public function getAuthPassword()
     {
-        return $this->hasMany(Prestatie::class);
+        return $this->wachtwoord;
     }
 }

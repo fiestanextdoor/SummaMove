@@ -28,5 +28,7 @@
 
         <button type="submit">Inloggen</button>
     </form>
+
+    <p>Nog geen account? <a href="{{ route('register') }}">Registreren</a></p>
 </body>
 </html>
