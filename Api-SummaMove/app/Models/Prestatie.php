@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Prestatie extends Model
 {
-    use HasFactory;
+    protected $fillable = ['gebruiker_id', 'oefening_id', 'aantal', 'datum'];
 
-    protected $table = 'prestaties';
 
-    protected $fillable = [
-        'user_id',
-        'oefening_id',
-        'score',
-    ];
 
     public function gebruiker()
     {
-        return $this->belongsTo(Gebruiker::class, 'user_id');
+        return $this->belongsTo(Gebruiker::class, 'gebruiker_id');
     }
 
+    // Relatie met oefening (als je die hebt)
     public function oefening()
     {
-        return $this->belongsTo(Oefening::class, 'oefening_id');
+        return $this->belongsTo(Oefening::class);
     }
 }

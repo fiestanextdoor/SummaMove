@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Bewerk Prestatie')
+@section('title', 'Prestatie Bewerken')
 
 @section('content')
     <h1>Prestatie Bewerken</h1>
@@ -20,25 +20,27 @@
         @method('PUT')
 
         <label>Gebruiker:</label><br />
-        <select name="user_id" required>
+        <select name="id" required>
+            <option value="">-- Kies gebruiker --</option>
             @foreach($gebruikers as $gebruiker)
-                <option value="{{ $gebruiker->id }}" {{ (old('user_id', $prestatie->user_id) == $gebruiker->id) ? 'selected' : '' }}>
-                    {{ $gebruiker->name }}
+                <option value="{{ $gebruiker->id }}" {{ (old('id') ?? $prestatie->id) == $gebruiker->id ? 'selected' : '' }}>
+                    {{ $gebruiker->naam }}
                 </option>
             @endforeach
         </select><br /><br />
 
         <label>Oefening:</label><br />
         <select name="oefening_id" required>
+            <option value="">-- Kies oefening --</option>
             @foreach($oefeningen as $oefening)
-                <option value="{{ $oefening->id }}" {{ (old('oefening_id', $prestatie->oefening_id) == $oefening->id) ? 'selected' : '' }}>
+                <option value="{{ $oefening->id }}" {{ (old('oefening_id') ?? $prestatie->oefening_id) == $oefening->id ? 'selected' : '' }}>
                     {{ $oefening->naam }}
                 </option>
             @endforeach
         </select><br /><br />
 
         <label>Score:</label><br />
-        <input type="number" name="score" min="0" value="{{ old('score', $prestatie->score) }}" required /><br /><br />
+        <input type="number" name="score" min="0" value="{{ old('score') ?? $prestatie->score }}" required /><br /><br />
 
         <button type="submit" class="btn">Opslaan</button>
     </form>

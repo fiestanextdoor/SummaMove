@@ -10,7 +10,7 @@ class CreatePrestatiesTable extends Migration
     {
         Schema::create('prestaties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('gebruiker_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('gebruiker_id')->constrained('gebruikers')->onDelete('cascade');
             $table->foreignId('oefening_id')->constrained('oefeningen')->onDelete('cascade');
             $table->date('datum');
             $table->time('starttijd');

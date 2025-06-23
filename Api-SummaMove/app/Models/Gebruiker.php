@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gebruiker extends Model
 {
-    // Tabel naam als die niet standaard pluralisatie volgt:
-    protected $table = 'gebruikers';
+    protected $table = 'gebruikers'; // je eigen tabelnaam
 
-    // Als je primary key anders heet, definieer dat ook:
-    // protected $primaryKey = 'id';
+    protected $fillable = ['username']; // pas aan met jouw kolommen
 
-    // Als je timestamps niet gebruikt
-    // public $timestamps = false;
-
-    protected $fillable = [
-        // vul in wat je wil kunnen mass assignen
-        'naam', 'email', 'etc'
-    ];
+    // Relatie: een gebruiker kan meerdere prestaties hebben
+    public function prestaties()
+    {
+        return $this->hasMany(Prestatie::class, 'gebruiker_id');
+    }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prestatie;
-use App\Models\User;
+use App\Models\Gebruiker;
 use App\Models\Oefening;
 use Illuminate\Http\Request;
 
@@ -11,54 +11,74 @@ class PrestatieController extends Controller
 {
     public function index()
     {
-        $prestaties = Prestatie::with(['gebruiker', 'oefening'])->get();
-
+        $prestaties = Prestatie::all();
         return view('prestaties.index', compact('prestaties'));
     }
 
     public function create()
+{
+    $gebruikers = \App\Models\Gebruiker::all();
+    $oefeningen = \App\Models\Oefening::all();
+
+    return view('prestaties.create', compact('gebruikers', 'oefeningen'));
+}
+
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'username' => 'required|exists:gebruikers,username',
+        'oefening_id' => 'required|exists:oefeningen,id',
+        'datum' => 'required|date',
+        'starttijd' => 'required|date_format:H:i',
+        'eindtijd' => 'required|date_format:H:i|after:starttijd',
+        'aantal' => 'required|integer|min:1',
+    ]);
+
+    $gebruiker = \App\Models\Gebruiker::where('username', $validated['username'])->first();
+
+    \App\Models\Prestatie::create([
+        'gebruiker_id' => $gebruiker->id,
+        'oefening_id' => $validated['oefening_id'],
+        'datum' => $validated['datum'],
+        'starttijd' => $validated['starttijd'],
+        'eindtijd' => $validated['eindtijd'],
+        'aantal' => $validated['aantal'],
+    ]);
+
+    return redirect()->route('prestaties.index')->with('success', 'Prestatie succesvol toegevoegd.');
+}
+
+
+
+    public function edit($id)
     {
-        $gebruikers = User::all();
+        $prestatie = Prestatie::findOrFail($id);
+        $gebruikers = Gebruiker::all();
         $oefeningen = Oefening::all();
-        return view('prestaties.create', compact('gebruikers', 'oefeningen'));
-    }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:gebruikers,id',
-            'oefening_id' => 'required|exists:oefeningen,id',
-            'score' => 'required|integer',
-        ]);
-
-        $prestatie = Prestatie::create($validated);
-
-        return redirect()->back()->with('success', 'Prestatie toegevoegd!');
-    }
-
-    public function edit(Prestatie $prestatie)
-    {
-        $gebruikers = User::all();
-        $oefeningen = Oefening::all();
         return view('prestaties.edit', compact('prestatie', 'gebruikers', 'oefeningen'));
     }
 
-    public function update(Request $request, Prestatie $prestatie)
+    public function update(Request $request, $id)
     {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
+        $validated = $request->validate([
+            'id' => 'required|exists:gebruikers,id',
             'oefening_id' => 'required|exists:oefeningen,id',
-            'score' => 'required|integer|min:0',
+            'aantal' => 'required|integer|min:0',
         ]);
 
-        $prestatie->update($data);
+        $prestatie = Prestatie::findOrFail($id);
+        $prestatie->update($validated);
 
-        return redirect()->route('prestaties.index')->with('success', 'Prestatie bijgewerkt.');
+        return redirect()->route('prestaties.index')->with('success', 'Prestatie succesvol aangepast.');
     }
 
-    public function destroy(Prestatie $prestatie)
+    public function destroy($id)
     {
+        $prestatie = Prestatie::findOrFail($id);
         $prestatie->delete();
-        return redirect()->route('prestaties.index')->with('success', 'Prestatie verwijderd.');
+
+        return redirect()->route('prestaties.index')->with('success', 'Prestatie succesvol verwijderd.');
     }
 }
