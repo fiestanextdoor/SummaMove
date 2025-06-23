@@ -3,54 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Gebruiker;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function showLoginForm()
     {
-        $validated = $request->validate([
-            'username' => 'required|unique:gebruikers',
-            'password' => 'required|min:6',
-        ]);
-
-        $gebruiker = Gebruiker::create([
-            'username' => $validated['username'],
-            'password' => bcrypt($validated['password']),
-        ]);
-
-        $token = auth()->login($gebruiker);
-
-        return response()->json([
-            'message' => 'Registratie gelukt',
-            'token' => $token
-        ], 201);
+        return view('auth.login');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->validate([
+           'email' => 'required|email',
+           'password' => 'required',
+        ]);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Ongeldige gegevens'], 401);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
         }
 
-        return response()->json([
-            'message' => 'Login gelukt',
-            'token' => $token
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
         ]);
     }
 
-    public function me()
+    public function showRegisterForm()
     {
-        return response()->json(auth()->user());
+        return view('auth.register');
     }
 
-    public function logout()
+    public function register(Request $request)
     {
-        auth()->logout();
-        return response()->json(['message' => 'Uitgelogd']);
+        $data = $request->validate([
+           'name' => 'required|string|max:255',
+           'email' => 'required|email|unique:users,email',
+           'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = User::create([
+           'name' => $data['name'],
+           'email' => $data['email'],
+           'password' => Hash::make($data['password']),
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('dashboard');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

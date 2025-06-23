@@ -65,11 +65,12 @@ return [
     */
 
     'providers' => [
-    'gebruikers' => [
+    'users' => [
         'driver' => 'eloquent',
         'model' => App\Models\Gebruiker::class,
     ],
 ],
+
 
     /*
     |--------------------------------------------------------------------------

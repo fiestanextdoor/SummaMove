@@ -10,47 +10,51 @@ class OefeningController extends Controller
     public function index()
     {
         $oefeningen = Oefening::all();
-        return view('dashboard.oefeningen.index', compact('oefeningen'));
+        return view('oefeningen.index', compact('oefeningen'));
     }
 
     public function create()
     {
-        return view('dashboard.oefeningen.create');
+        return view('oefeningen.create');
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // Valideer en maak nieuwe oefening aan
+        $request->validate([
             'naam' => 'required|string|max:255',
-            'beschrijving' => 'nullable|string',
+            // voeg meer validatie toe indien nodig
         ]);
 
-        Oefening::create($validated);
+        Oefening::create($request->all());
 
-        return redirect()->route('dashboard.oefeningen.index')->with('success', 'Oefening toegevoegd!');
+        return redirect()->route('oefeningen.index')->with('success', 'Oefening toegevoegd!');
+    }
+
+    public function show(Oefening $oefening)
+    {
+        return view('oefeningen.show', compact('oefening'));
     }
 
     public function edit(Oefening $oefening)
     {
-        return view('dashboard.oefeningen.edit', compact('oefening'));
+        return view('oefeningen.edit', compact('oefening'));
     }
 
     public function update(Request $request, Oefening $oefening)
     {
-        $validated = $request->validate([
+        $request->validate([
             'naam' => 'required|string|max:255',
-            'beschrijving' => 'nullable|string',
         ]);
 
-        $oefening->update($validated);
+        $oefening->update($request->all());
 
-        return redirect()->route('dashboard.oefeningen.index')->with('success', 'Oefening bijgewerkt!');
+        return redirect()->route('oefeningen.index')->with('success', 'Oefening bijgewerkt!');
     }
 
     public function destroy(Oefening $oefening)
     {
         $oefening->delete();
-
-        return redirect()->route('dashboard.oefeningen.index')->with('success', 'Oefening verwijderd!');
+        return redirect()->route('oefeningen.index')->with('success', 'Oefening verwijderd!');
     }
 }

@@ -1,37 +1,43 @@
 @extends('layouts.app')
 
+@section('title', 'Prestaties')
+
 @section('content')
-    <h1>Prestaties van {{ auth()->user()->username }}</h1>
+    <h1>Prestaties</h1>
 
-    <form method="GET" action="{{ route('prestaties.index') }}">
-        <label>Sorteren op:</label>
-        <select name="sort" onchange="this.form.submit()">
-            <option value="">-- Kies --</option>
-            <option value="datum" {{ request('sort') == 'datum' ? 'selected' : '' }}>Datum</option>
-            <option value="oefening" {{ request('sort') == 'oefening' ? 'selected' : '' }}>Oefening</option>
-        </select>
-    </form>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:10px;">
+    <a href="{{ route('prestaties.create') }}" class="btn btn-primary">Nieuwe prestatie toevoegen</a>
+
+    <table>
         <thead>
             <tr>
-                <th>Datum</th>
+                <th>Gebruiker</th>
                 <th>Oefening</th>
-                <th>Aantal keer</th>
-                <th>Starttijd</th>
-                <th>Eindtijd</th>
+                <th>Score</th>
+                <th>Acties</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($prestaties as $prestatie)
+            @foreach($prestaties as $prestatie)
                 <tr>
-                    <td>{{ $prestatie->datum->format('d-m-Y') }}</td>
-                    <td>{{ $prestatie->oefening->naam ?? '-' }}</td>
-                    <td>{{ $prestatie->aantal_keer }}</td>
-                    <td>{{ $prestatie->starttijd }}</td>
-                    <td>{{ $prestatie->eindtijd }}</td>
+                    <td>{{ $prestatie->gebruiker?->name ?? 'Onbekende gebruiker' }}</td>
+                    <td>{{ $prestatie->oefening?->naam ?? 'Onbekende oefening' }}</td>
+                    <td>{{ $prestatie->score }}</td>
+                    <td>
+                        <a href="{{ route('prestaties.edit', $prestatie) }}" class="btn btn-warning">Bewerk</a>
+
+                        <form action="{{ route('prestaties.destroy', $prestatie) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger" onclick="return confirm('Weet je het zeker?')">Verwijder</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 @endsection
+ 

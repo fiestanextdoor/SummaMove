@@ -17,11 +17,12 @@ class Gebruiker extends Authenticatable
         'password',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = [
+        'password',
+    ];
 
     public function prestaties()
     {
         return $this->hasMany(Prestatie::class);
     }
 }
-
