@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class Gebruiker extends Authenticatable
+class Gebruiker extends Model
 {
-    protected $table = 'gebruikers';  // jouw custom tabel
+    // Tabel naam als die niet standaard pluralisatie volgt:
+    protected $table = 'gebruikers';
 
-    protected $fillable = ['naam', 'email', 'wachtwoord']; // pas aan naar jouw kolommen
+    // Als je primary key anders heet, definieer dat ook:
+    // protected $primaryKey = 'id';
 
-    protected $hidden = ['wachtwoord', 'remember_token'];
+    // Als je timestamps niet gebruikt
+    // public $timestamps = false;
 
-    protected $primaryKey = 'id';  // meestal id, pas aan indien anders
-
-    // Pas wachtwoord kolomnaam aan, als het niet 'password' is
-    public function getAuthPassword()
-    {
-        return $this->wachtwoord;
-    }
+    protected $fillable = [
+        // vul in wat je wil kunnen mass assignen
+        'naam', 'email', 'etc'
+    ];
 }
