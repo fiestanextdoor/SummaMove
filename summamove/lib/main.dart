@@ -12,6 +12,8 @@ void main() {
 }
 
 class SummaMoveApp extends StatelessWidget {
+  const SummaMoveApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

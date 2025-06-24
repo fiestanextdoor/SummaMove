@@ -5,7 +5,12 @@ use App\Http\Controllers\OefeningController;
 use App\Http\Controllers\PrestatieController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserInlogController;
+use App\Http\Controllers\UserRegisterController;
+use App\Http\Controllers\UserLoginController;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+
 
 // Root redirect naar dashboard
 Route::get('/', function () {
@@ -37,6 +42,10 @@ Route::middleware('auth')->prefix('prestaties')->name('prestaties.')->group(func
     Route::delete('/{prestatie}', [PrestatieController::class, 'destroy'])->name('destroy');
 });
 
+
+Route::post('/api/login', [UserInlogController::class, 'login']);
+Route::post('/api/register', [UserRegisterController::class, 'register']);
+
 // Gebruikerslijst routes (auth verplicht)
 Route::middleware('auth')->prefix('gebruikers')->name('gebruikers.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
@@ -47,6 +56,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 });
+
+Route::post('/login', [UserLoginController::class, 'login']);
+
 
 // Auth routes (login, logout, wachtwoord reset, etc.)
 Auth::routes();
