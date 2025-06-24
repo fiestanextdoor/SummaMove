@@ -1,67 +1,43 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    public function register(Request $request)
     {
-        return view('auth.login');
+        $request->validate([
+            'username' => 'required|unique:gebruikers',
+            'password' => 'required|min:6',
+        ]);
+
+        $hashedPassword = Hash::make($request->password);
+
+        DB::table('gebruikers')->insert([
+            'username' => $request->username,
+            'password' => $hashedPassword,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Registratie gelukt']);
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-           'email' => 'required|email',
-           'password' => 'required',
-        ]);
+        $user = DB::table('gebruikers')->where('username', $request->username)->first();
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Gebruiker niet gevonden'], 404);
         }
 
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
-    }
-
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
-
-    public function register(Request $request)
-    {
-        $data = $request->validate([
-           'name' => 'required|string|max:255',
-           'email' => 'required|email|unique:users,email',
-           'password' => 'required|confirmed|min:6',
-        ]);
-
-        $user = User::create([
-           'name' => $data['name'],
-           'email' => $data['email'],
-           'password' => Hash::make($data['password']),
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
+        if (Hash::check($request->password, $user->password)) {
+            return response()->json(['success' => true, 'message' => 'Login gelukt', 'user' => $user]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Wachtwoord incorrect'], 401);
+        }
     }
 }

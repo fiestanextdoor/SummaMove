@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PerformanceScreen extends StatefulWidget {
+  const PerformanceScreen({super.key});
+
   @override
   _PerformanceScreenState createState() => _PerformanceScreenState();
 }
@@ -61,7 +63,7 @@ class _PerformanceScreenState extends State<PerformanceScreen> {
 class AddPerformanceScreen extends StatefulWidget {
   final List<String> exercises;
 
-  AddPerformanceScreen({required this.exercises});
+  const AddPerformanceScreen({super.key, required this.exercises});
 
   @override
   _AddPerformanceScreenState createState() => _AddPerformanceScreenState();
@@ -112,8 +114,8 @@ class _AddPerformanceScreenState extends State<AddPerformanceScreen> {
                 decoration: InputDecoration(labelText: 'Naam van oefening'),
                 items: widget.exercises
                     .map((e) => DropdownMenuItem(
-                  child: Text(e),
                   value: e,
+                  child: Text(e),
                 ))
                     .toList(),
                 validator: (value) =>
