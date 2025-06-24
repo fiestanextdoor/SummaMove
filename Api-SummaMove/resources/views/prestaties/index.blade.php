@@ -9,7 +9,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <a href="{{ route('prestaties.create') }}" class="btn btn-primary">Nieuwe prestatie toevoegen</a>
+    
 
     <table>
         <thead>
@@ -27,7 +27,7 @@
                     <td>{{ $prestatie->oefening?->naam ?? 'Onbekende oefening' }}</td>
                     <td>{{ $prestatie->score }}</td>
                     <td>
-                        <a href="{{ route('prestaties.edit', $prestatie) }}" class="btn btn-warning">Bewerk</a>
+                        
 
                         <form action="{{ route('prestaties.destroy', $prestatie) }}" method="POST" style="display:inline;">
                             @csrf
