@@ -1,12 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GebruikerController;
+use App\Http\Controllers\OefeningController;
+use App\Http\Controllers\PrestatieController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ExerciseController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PerformanceController;
-use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -14,12 +12,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-// ✅ Dashboard route toevoegen
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('gebruikers', GebruikerController::class);
 
-// Andere routes (zoals users, exercises, etc.)
-Route::resource('users', UserController::class);
-Route::resource('exercises', ExerciseController::class);
-Route::resource('performances', PerformanceController::class);
+    Route::resource('oefeningen', OefeningController::class)->parameters([
+        'oefeningen' => 'oefening',
+    ]);
+
+    Route::resource('prestaties', PrestatieController::class)->parameters([
+    'prestaties' => 'prestatie',
+    ]);
+});
