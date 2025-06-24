@@ -23,9 +23,9 @@
         <tbody>
             @foreach($prestaties as $prestatie)
                 <tr>
-                    <td>{{ $prestatie->gebruiker?->name ?? 'Onbekende gebruiker' }}</td>
+                    <td>{{ $prestatie->username?->name ?? 'Onbekende gebruiker' }}</td>
                     <td>{{ $prestatie->oefening?->naam ?? 'Onbekende oefening' }}</td>
-                    <td>{{ $prestatie->score }}</td>
+                    <td>{{ $prestatie->aantal }}</td>
                     <td>
                         
 
